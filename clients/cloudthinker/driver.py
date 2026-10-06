@@ -1,14 +1,14 @@
 """
-CloudThinker agent driver for SREGym.
+CloudThinker agent driver.
 
 Drives the two-phase benchmark flow (diagnosis + mitigation) against a locally
-running CloudThinker stack, then submits results to the SREGym conductor.
+running CloudThinker stack, then submits results to the evaluation conductor.
 
 Anna runs as a hosted multi-agent system, not a subprocess the harness owns, so
 this driver uses `container_isolation: false` and talks to the stack through the
 `ct` dev CLI (`ct chat --json`), which mints the JWT and streams the turn.
 
-The SREGym MCP tools (kubectl / prometheus / loki / jaeger) are registered as
+The evaluation MCP tools (kubectl / prometheus / loki / jaeger) are registered as
 workspace MCP connections in CloudThinker, so Anna reaches the benchmark cluster
 the same way a customer reaches their own -- no harness-side tool shim.
 """

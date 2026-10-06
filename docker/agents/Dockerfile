@@ -48,21 +48,22 @@ RUN python3 -m pip install --break-system-packages -r /tmp/requirements-containe
 # ───────────────────────────────────────────────
 # 5. Application code
 # ───────────────────────────────────────────────
-COPY clients/        /opt/sregym/clients/
-COPY logger/         /opt/sregym/logger/
-COPY llm_backend/    /opt/sregym/llm_backend/
-COPY sregym/__init__.py sregym/paths.py /opt/sregym/sregym/
-COPY sregym/service/__init__.py sregym/service/kubectl.py sregym/service/helm.py /opt/sregym/sregym/service/
-COPY sregym/service/apps/base.py sregym/service/apps/helpers.py /opt/sregym/sregym/service/apps/
-COPY docker/agents/install-scripts/ /opt/sregym/install-scripts/
-RUN chmod +x /opt/sregym/install-scripts/*.sh
+# The runtime root must stay neutral: an agent lists /opt and reads its own
+# PYTHONPATH, and a branded directory there identifies the harness outright.
+# No harness source is vendored into this image; the drivers that run here
+# import only clients/, logger/ and llm_backend/.
+COPY clients/        /opt/evaluation/clients/
+COPY logger/         /opt/evaluation/logger/
+COPY llm_backend/    /opt/evaluation/llm_backend/
+COPY docker/agents/install-scripts/ /opt/evaluation/install-scripts/
+RUN chmod +x /opt/evaluation/install-scripts/*.sh
 
 # ───────────────────────────────────────────────
 # 6. Runtime setup
 # ───────────────────────────────────────────────
-ENV PYTHONPATH="/opt/sregym"
+ENV PYTHONPATH="/opt/evaluation"
 
-# SREGym-applications/ is bind-mounted at runtime, not baked in.
+# Application sources are bind-mounted at runtime, not baked in.
 RUN mkdir -p /logs
 WORKDIR /logs
 

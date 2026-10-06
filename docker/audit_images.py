@@ -29,8 +29,8 @@ VALUES = ROOT / "sregym/service/apps/values"
 EXCLUDED = {
     "app-image:latest": "Deliberately nonexistent image used to inject a pull failure.",
     "pingcap/tidb-operatorr:v1.6.3": "Deliberate spelling error used to inject a pull failure.",
-    "sregym-agent-base:latest": "Local development build; published DEFAULT_AGENT_IMAGE is checked.",
-    "sregym:latest": "MCP source placeholder; the rendered kustomization is checked.",
+    "evaluation-agent-base:latest": "Local development build; published DEFAULT_AGENT_IMAGE is checked.",
+    "evaluation-mcp:latest": "MCP source placeholder; the rendered kustomization is checked.",
 }
 REFERENCE = re.compile(r"(?:[\w.-]+(?::[0-9]+)?/)*[a-z0-9][a-z0-9._-]*(?::[\w.-]+)?(?:@sha256:[a-f0-9]{64})?")
 SOURCE_ROOTS = ("sregym", "scripts", "kind", "mcp_server", "clients")

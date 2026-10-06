@@ -19,7 +19,7 @@ from sregym.service.container_runner import ContainerRunner
 from sregym.service.internet_policy import InternetPolicy
 from sregym.service.mcp_server import MCPServer
 
-OWN_CMDLINE = "kubectl port-forward svc/mcp-server 9954:9954 -n sregym --address 0.0.0.0"
+OWN_CMDLINE = "kubectl port-forward svc/mcp-server 9954:9954 -n evaluation --address 0.0.0.0"
 
 
 @pytest.fixture

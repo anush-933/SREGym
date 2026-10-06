@@ -52,6 +52,7 @@ from sregym.service.agent_visibility_policy import (
     is_hidden_api_group,
     is_hidden_cluster_resource,
     is_hidden_resource,
+    mentions_brand,
     mentions_chaos_mesh,
     sanitize_visible_resource,
 )
@@ -1000,6 +1001,7 @@ class KubernetesAPIProxy:
                             header.lower() not in ("transfer-encoding", "content-length", "content-encoding")
                             and not (concealed_error and header.lower() == "content-type")
                             and not mentions_chaos_mesh(value)
+                            and not mentions_brand(value)
                         ):
                             self.send_header(header, value)
                     if concealed_error:
@@ -1091,13 +1093,15 @@ class KubernetesAPIProxy:
             self.listen_host if self.listen_host in {"127.0.0.1", "::1", "localhost"} else "host.docker.internal"
         )
 
+        # The agent reads this file, so nothing here may name the harness: a
+        # branded context is a giveaway in `kubectl config view`.
         kubeconfig = {
             "apiVersion": "v1",
             "kind": "Config",
-            "current-context": "sregym-agent",
+            "current-context": "evaluation-agent",
             "clusters": [
                 {
-                    "name": "sregym-proxy",
+                    "name": "evaluation-proxy",
                     "cluster": {
                         "server": f"https://{server_host}:{self.listen_port}",
                         "certificate-authority-data": base64.b64encode(self._server_cert_pem.encode()).decode(),
@@ -1106,16 +1110,16 @@ class KubernetesAPIProxy:
             ],
             "contexts": [
                 {
-                    "name": "sregym-agent",
+                    "name": "evaluation-agent",
                     "context": {
-                        "cluster": "sregym-proxy",
-                        "user": "sregym-agent",
+                        "cluster": "evaluation-proxy",
+                        "user": "evaluation-agent",
                     },
                 }
             ],
             "users": [
                 {
-                    "name": "sregym-agent",
+                    "name": "evaluation-agent",
                     "user": {"token": self._agent_token},
                 }
             ],
@@ -1123,7 +1127,7 @@ class KubernetesAPIProxy:
 
         owns_output = output_path is None
         if owns_output:
-            fd, output_path = tempfile.mkstemp(prefix="sregym-agent-kubeconfig-", suffix=".yaml")
+            fd, output_path = tempfile.mkstemp(prefix="evaluation-agent-kubeconfig-", suffix=".yaml")
             os.close(fd)
 
         with open(output_path, "w") as f:

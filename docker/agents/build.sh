@@ -4,7 +4,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-IMAGE="${SREGYM_AGENT_IMAGE:-sregym-agent-base:latest}"
+IMAGE="${SREGYM_AGENT_IMAGE:-evaluation-agent-base:latest}"
 
 # Match the host client unless the caller pins a version explicitly.
 if [[ -z "${KUBECTL_VERSION:-}" ]] && command -v kubectl >/dev/null 2>&1; then

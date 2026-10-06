@@ -1,6 +1,6 @@
 """
-Cursor agent driver for SREGym.
-Entry point for running the Cursor CLI agent on SREGym tasks.
+Cursor agent driver.
+Entry point for running the Cursor CLI agent.
 """
 
 import argparse
@@ -213,7 +213,7 @@ def save_results(
 
 def main():
     """Main entry point for Cursor agent driver."""
-    parser = argparse.ArgumentParser(description="Run Cursor agent on SREGym tasks")
+    parser = argparse.ArgumentParser(description="Run Cursor agent on evaluation tasks")
     parser.add_argument(
         "--model",
         type=str,
@@ -230,7 +230,7 @@ def main():
         "--problem-id",
         type=str,
         default=None,
-        help="Problem ID for artifact naming (default: SREGYM_ARTIFACT_ID in benchmark runs)",
+        help="Problem ID for artifact naming (default: HARNESS_ARTIFACT_ID in benchmark runs)",
     )
     parser.add_argument(
         "--no-auto-install",
@@ -241,7 +241,7 @@ def main():
     args = parser.parse_args()
 
     logger.info("=" * 80)
-    logger.info("Starting Cursor agent for SREGym")
+    logger.info("Starting Cursor agent")
     logger.info(f"Model: {args.model}")
     logger.info(f"Logs directory: {args.logs_dir}")
     logger.info("=" * 80)

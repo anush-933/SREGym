@@ -1,4 +1,4 @@
-"""OpenCode agent for SREGym."""
+"""OpenCode agent."""
 
 from clients.opencode.opencode_agent import OpenCodeAgent
 

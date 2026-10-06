@@ -72,8 +72,8 @@ def test_exceptions_do_not_hide_real_upstream_runtime_images():
     assert set(AUDIT["EXCLUDED"]) == {
         "app-image:latest",
         "pingcap/tidb-operatorr:v1.6.3",
-        "sregym-agent-base:latest",
-        "sregym:latest",
+        "evaluation-agent-base:latest",
+        "evaluation-mcp:latest",
     }
 
 

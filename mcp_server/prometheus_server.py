@@ -2,7 +2,7 @@ from fastmcp import FastMCP
 
 from clients.stratus.stratus_utils.get_logger import get_logger
 from mcp_server.utils import ObservabilityClient
-from sregym.service.agent_visibility_policy import visible_observability_record
+from sregym.service.agent_visibility_policy import neutralize_brand, visible_observability_record
 
 logger = get_logger()
 logger.info("Starting Prometheus MCP Server")
@@ -36,7 +36,7 @@ def get_metrics(query: str) -> str:
         data = response.json()["data"]
         if isinstance(data.get("result"), list):
             data["result"] = [record for record in data["result"] if visible_observability_record(record)]
-        metrics = str(data)
+        metrics = neutralize_brand(str(data))
         result = metrics if metrics else "None"
 
         return result
@@ -72,7 +72,7 @@ def get_alerts() -> str:
         if not firing:
             return "No firing alerts"
 
-        return str(firing)
+        return neutralize_brand(str(firing))
     except Exception as e:
         err_str = f"[prom_mcp] Error querying get_alerts: {str(e)}"
         logger.error(err_str)

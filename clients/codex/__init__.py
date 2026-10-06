@@ -1,4 +1,4 @@
-"""Codex agent for SREGym."""
+"""Codex agent."""
 
 from clients.codex.codex_agent import CodexAgent
 

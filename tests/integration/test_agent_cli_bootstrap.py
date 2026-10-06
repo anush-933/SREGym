@@ -8,7 +8,12 @@ from pathlib import Path
 
 import pytest
 
-from sregym.service.container_runner import ContainerConfig, ContainerRunner, ExecInput
+from sregym.service.container_runner import (
+    AGENT_INSTALL_SCRIPTS_ROOT,
+    ContainerConfig,
+    ContainerRunner,
+    ExecInput,
+)
 
 pytestmark = pytest.mark.integration
 
@@ -21,7 +26,7 @@ def test_agent_cli_installs_and_reports_version(agent, monkeypatch, tmp_path):
     try:
         result = runner.run_sync(
             ExecInput(
-                command=f"bash /opt/sregym/install-scripts/install-{agent}.sh",
+                command=f"bash {AGENT_INSTALL_SCRIPTS_ROOT}/install-{agent}.sh",
                 env={"DISABLE_TELEMETRY": "1", "DO_NOT_TRACK": "1"},
                 timeout=600,
                 label=f"bootstrap-{agent}",

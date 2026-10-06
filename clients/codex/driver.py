@@ -1,6 +1,6 @@
 """
-Codex agent driver for SREGym.
-Entry point for running Codex agent on SREGym tasks.
+Codex agent driver.
+Entry point for running Codex agent.
 """
 
 import argparse
@@ -257,7 +257,7 @@ def save_results(
 
 def main():
     """Main entry point for Codex agent driver."""
-    parser = argparse.ArgumentParser(description="Run Codex agent on SREGym tasks")
+    parser = argparse.ArgumentParser(description="Run Codex agent on evaluation tasks")
     parser.add_argument(
         "--model",
         type=str,
@@ -274,7 +274,7 @@ def main():
         "--problem-id",
         type=str,
         default=None,
-        help="Problem ID for artifact naming (default: SREGYM_ARTIFACT_ID in benchmark runs)",
+        help="Problem ID for artifact naming (default: HARNESS_ARTIFACT_ID in benchmark runs)",
     )
     parser.add_argument(
         "--codex-home",
@@ -291,7 +291,7 @@ def main():
     args = parser.parse_args()
 
     logger.info("=" * 80)
-    logger.info("Starting Codex agent for SREGym")
+    logger.info("Starting Codex agent")
     logger.info(f"Model: {args.model}")
     logger.info(f"Logs directory: {args.logs_dir}")
     logger.info("=" * 80)

@@ -1,5 +1,5 @@
 """
-Claude Code agent implementation for SREGym.
+Claude Code agent implementation.
 Based on Harbor's Claude Code agent implementation for parity experiments.
 """
 

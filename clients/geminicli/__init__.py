@@ -1,4 +1,4 @@
-"""Gemini CLI agent for SREGym."""
+"""Gemini CLI agent."""
 
 from clients.geminicli.geminicli_agent import GeminiCliAgent
 

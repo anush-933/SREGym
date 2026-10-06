@@ -16,10 +16,14 @@ from sregym.service.rollout import deployment_rollout_complete
 
 logger = logging.getLogger("all.sregym.mcp_server")
 
+# The MCP server lives in an ordinary namespace the agent can list, so the
+# namespace must agree with mcp_server/k8s/kustomization.yaml and stay neutral.
+MCP_NAMESPACE = "evaluation"
+
 
 class MCPServer:
     def __init__(self, *, restrict_network_access: bool = False):
-        self.namespace = "sregym"
+        self.namespace = MCP_NAMESPACE
         self.service_name = "mcp-server"
         # Local end of the port-forward only. The in-cluster Service port stays
         # 9954 (see start_port_forward), so this can move without touching the

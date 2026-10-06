@@ -1,5 +1,5 @@
 """
-GitHub Copilot CLI agent implementation for SREGym.
+GitHub Copilot CLI agent implementation.
 """
 
 import logging

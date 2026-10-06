@@ -1,6 +1,6 @@
 """
-Claude Code agent driver for SREGym.
-Entry point for running Claude Code agent on SREGym tasks.
+Claude Code agent driver.
+Entry point for running Claude Code agent.
 """
 
 import argparse
@@ -236,7 +236,7 @@ def save_results(
 
 def main():
     """Main entry point for Claude Code agent driver."""
-    parser = argparse.ArgumentParser(description="Run Claude Code agent on SREGym tasks")
+    parser = argparse.ArgumentParser(description="Run Claude Code agent on evaluation tasks")
     parser.add_argument(
         "--model",
         type=str,
@@ -253,7 +253,7 @@ def main():
         "--problem-id",
         type=str,
         default=None,
-        help="Problem ID for artifact naming (default: SREGYM_ARTIFACT_ID in benchmark runs)",
+        help="Problem ID for artifact naming (default: HARNESS_ARTIFACT_ID in benchmark runs)",
     )
     parser.add_argument(
         "--sessions-dir",
@@ -270,7 +270,7 @@ def main():
     args = parser.parse_args()
 
     logger.info("=" * 80)
-    logger.info("Starting Claude Code agent for SREGym")
+    logger.info("Starting Claude Code agent")
     logger.info(f"Model: {args.model}")
     logger.info(f"Logs directory: {args.logs_dir}")
     logger.info("=" * 80)

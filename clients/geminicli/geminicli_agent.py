@@ -1,5 +1,5 @@
 """
-Gemini CLI agent implementation for SREGym.
+Gemini CLI agent implementation.
 Based on Harbor's Gemini CLI agent implementation for parity experiments.
 """
 

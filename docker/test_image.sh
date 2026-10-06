@@ -142,8 +142,12 @@ assert any(route.path == "/api/health" for route in server.app.routes)
         run_image --entrypoint bash "$IMAGE" -ec '
             kubectl version --client
             node --version
-            python3 -c "import clients, logger, llm_backend; from sregym.service.kubectl import KubeCtl"
-            test -x /opt/sregym/install-scripts/install-codex.sh
+            python3 -c "import clients, logger, llm_backend"
+            test -x /opt/evaluation/install-scripts/install-codex.sh
+            # No harness source or branded path may exist in the agent filesystem.
+            python3 -c "import importlib.util as u; assert u.find_spec(\"sregym\") is None"
+            ! ls -d /opt/sregym
+            ! echo "$PYTHONPATH" | grep -qi sregym
         '
         ;;
     hotel-reservation)

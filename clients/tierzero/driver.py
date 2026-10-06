@@ -1,12 +1,12 @@
 """
-TierZero agent driver for SREGym.
+TierZero agent driver.
 
 Orchestrates the two-phase benchmark flow (diagnosis + mitigation) by calling
-TierZero's REST API and submitting results to the SREGym conductor.
+TierZero's REST API and submitting results to the evaluation conductor.
 
 TierZero runs as an external service -- the agent investigates via MCP tools
 (kubectl, prometheus, jaeger, loki) that are pre-configured on the TierZero org
-and tunneled to the SREGym MCP server via ngrok.
+and tunneled to the evaluation MCP server via ngrok.
 """
 
 import json

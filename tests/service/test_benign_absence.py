@@ -116,11 +116,11 @@ def test_social_network_tls_lookup_keeps_existing_secret():
     ],
 )
 def test_mcp_lookup_ignores_expected_absence(output, expected):
-    command = "kubectl get deployment mcp-server -n sregym --ignore-not-found -o json"
+    command = "kubectl get deployment mcp-server -n evaluation --ignore-not-found -o json"
     fake = _FakeKubeCtl({command: output})
     server = object.__new__(MCPServer)
     server.service_name = "mcp-server"
-    server.namespace = "sregym"
+    server.namespace = "evaluation"
     server.kubectl = fake
 
     assert server._is_running() is expected

@@ -33,7 +33,7 @@ logger.setLevel(logging.DEBUG)
 # Jaeger accumulate telemetry, and carrying that from one problem into the next
 # would make results order-dependent.
 PROTECTED_NAMESPACES = frozenset(
-    {"kube-system", "kube-public", "kube-node-lease", "default", "sregym", "chaos-mesh", "openebs"}
+    {"kube-system", "kube-public", "kube-node-lease", "default", "evaluation", "chaos-mesh", "openebs"}
 )
 
 

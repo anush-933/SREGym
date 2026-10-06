@@ -26,7 +26,12 @@ DEFAULT_AGENT_IMAGE = (
     "ghcr.io/sregym/agent-base:sha-b97d6810e994bb7354b4bc15c6bc81cb66e816b9"
     "@sha256:92e8b52af763c6e165144d314ec25b1ad3ba0e0f1b0a28ffa4a1760e92ec6b61"
 )
-LOCAL_AGENT_IMAGE = "sregym-agent-base:latest"
+LOCAL_AGENT_IMAGE = "evaluation-agent-base:latest"
+# Inside the agent container nothing may name the harness: these paths are what
+# an agent sees in `ls /opt` and in its own PYTHONPATH.
+AGENT_RUNTIME_ROOT = "/opt/evaluation"
+AGENT_APPS_ROOT = f"{AGENT_RUNTIME_ROOT}/apps"
+AGENT_INSTALL_SCRIPTS_ROOT = f"{AGENT_RUNTIME_ROOT}/install-scripts"
 HARDENING_FLAGS = (
     "--cap-drop=ALL",
     "--cap-add=DAC_OVERRIDE",
@@ -351,7 +356,7 @@ class ContainerRunner:
         self._run_docker_checked(["docker", "volume", "create", volume], "create the agent tools volume")
         self._agent_tools_volume = volume
         version = agent_version or "latest"
-        command = f"AGENT_VERSION={shlex.quote(version)} /opt/sregym/install-scripts/{shlex.quote(install_script)}"
+        command = f"AGENT_VERSION={shlex.quote(version)} {AGENT_INSTALL_SCRIPTS_ROOT}/{shlex.quote(install_script)}"
         try:
             result = subprocess.run(
                 [
@@ -408,7 +413,7 @@ class ContainerRunner:
             args.extend(["-v", f"{auth_src.resolve()}:/root/.codex/auth.json:rw"])
             return
 
-        tmp = tempfile.mkdtemp(prefix="sregym-codex-")
+        tmp = tempfile.mkdtemp(prefix="evaluation-codex-")
         auth_dst = Path(tmp) / "auth.json"
         shutil.copy2(auth_src, auth_dst)
 
@@ -481,7 +486,7 @@ class ContainerRunner:
                     continue
                 env_vars[key] = _replace_loopback_host(value)
 
-        # Agent containers use Docker's host alias to reach SREGym services
+        # Agent containers use Docker's host alias to reach harness services
         # running on the host, including the MCP port-forward.
         if self.config.network_mode == "host" or self.config.internet_policy.is_filtered:
             env_vars["API_HOSTNAME"] = "host.docker.internal"
@@ -566,12 +571,14 @@ class ContainerRunner:
             self.config.logs_path.mkdir(parents=True, exist_ok=True)
             args.extend(["-v", f"{self.config.logs_path.resolve()}:/logs"])
 
-        # Mount only the needed SREGym-applications subdirectories (read-only)
+        # Mount only the needed application subdirectories (read-only). The
+        # in-container path stays neutral so the mount target does not name the
+        # checkout it came from.
         if self.config.sregym_apps_path and self.config.sregym_app_subdirs:
             for subdir in self.config.sregym_app_subdirs:
                 host_path = self.config.sregym_apps_path / subdir
                 if host_path.exists():
-                    args.extend(["-v", f"{host_path.resolve()}:/opt/sregym/SREGym-applications/{subdir}:ro"])
+                    args.extend(["-v", f"{host_path.resolve()}:{AGENT_APPS_ROOT}/{subdir}:ro"])
 
         return args
 
@@ -593,7 +600,7 @@ class ContainerRunner:
         if not changed:
             return source
 
-        temp_dir = Path(tempfile.mkdtemp(prefix="sregym-kubeconfig-"))
+        temp_dir = Path(tempfile.mkdtemp(prefix="evaluation-kubeconfig-"))
         output = temp_dir / source.name
         with output.open("w", encoding="utf-8") as handle:
             yaml.safe_dump(config, handle, sort_keys=False)
@@ -607,7 +614,7 @@ class ContainerRunner:
         cmd = self._build_base_docker_args(exec_input.env)
         suffix = uuid.uuid4().hex[:8]
         if exec_input.label:
-            container_name = f"sregym-{exec_input.label}-{suffix}"
+            container_name = f"evaluation-{exec_input.label}-{suffix}"
             cmd.extend(["--name", container_name])
             exec_input.container_name = container_name
         cmd.extend(self._build_env_flags(exec_input.env))
@@ -628,9 +635,11 @@ class ContainerRunner:
         if install_script and not self.has_prepared_agent_tools:
             version_env = f'AGENT_VERSION="{agent_version}" ' if agent_version else ""
             if not capture_logs:
-                return f"{version_env}/opt/sregym/install-scripts/{install_script} > /dev/null 2>&1 && {driver_command}"
+                return (
+                    f"{version_env}{AGENT_INSTALL_SCRIPTS_ROOT}/{install_script} > /dev/null 2>&1 && {driver_command}"
+                )
             parts.append(
-                f"{version_env}/opt/sregym/install-scripts/{install_script} 2>&1 "
+                f"{version_env}{AGENT_INSTALL_SCRIPTS_ROOT}/{install_script} 2>&1 "
                 f"| tee /logs/install.log; INSTALL_RC=${{PIPESTATUS[0]}}; "
                 f'echo "$INSTALL_RC" > /logs/install.rc; '
                 f'[ "$INSTALL_RC" -eq 0 ] || exit "$INSTALL_RC"'

@@ -210,7 +210,7 @@ CLI_RUNNERS = {"cursor": _run_cursor, "codex": _run_codex, "claudecode": _run_cl
 
 
 def _run_agent(prompt: str, model: str, backend: str = "cursor") -> str:
-    with tempfile.TemporaryDirectory(prefix="sregym-judge-") as directory:
+    with tempfile.TemporaryDirectory(prefix="judge-") as directory:
         result = CLI_RUNNERS[backend](prompt, model, Path(directory), os.environ.copy())
         if not result.strip():
             raise RuntimeError(f"{backend} returned an empty judgment")

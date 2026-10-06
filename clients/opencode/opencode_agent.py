@@ -1,5 +1,5 @@
 """
-OpenCode agent implementation for SREGym.
+OpenCode agent implementation.
 Based on Harbor's OpenCode agent implementation for parity experiments.
 """
 

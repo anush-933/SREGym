@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: sregym
+namespace: evaluation
 
 resources:
   - namespace.yaml
@@ -12,10 +12,12 @@ resources:
   - service.yaml
 
 commonLabels:
-  app.kubernetes.io/part-of: sregym
+  app.kubernetes.io/part-of: evaluation
   app.kubernetes.io/managed-by: kustomize
 
+# The source-built placeholder is neutral. The published reference still carries
+# the harness org, which agent_visibility_policy rewrites on the way out.
 images:
-  - name: sregym
+  - name: evaluation-mcp
     newName: ghcr.io/sregym/sregym-mcp
     newTag: latest

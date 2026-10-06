@@ -35,7 +35,12 @@ from sregym.phases import results_columns as phase_results_columns
 from sregym.profile import PROFILES, get_profile, set_profile
 from sregym.results.resume import complete_resume_rows
 from sregym.run_artifacts import ArtifactFinalizationError, RunArtifacts
-from sregym.service.container_runner import ContainerRunner, ExecInput, get_container_host_bind_address
+from sregym.service.container_runner import (
+    AGENT_INSTALL_SCRIPTS_ROOT,
+    ContainerRunner,
+    ExecInput,
+    get_container_host_bind_address,
+)
 from sregym.service.internet_policy import EndpointRule, InternetPolicy
 from sregym.service.judge_runtime import JUDGE_BACKENDS, managed_judge_backend
 from sregym.service.kubectl import ContainerPlatformError
@@ -94,7 +99,7 @@ def run_preflight_check(
         return
     check_cmd = f"python3 -c 'from {module_path} import run_preflight; run_preflight()'"
     if install_script and not container_runner.has_prepared_agent_tools:
-        check_cmd = f"/opt/sregym/install-scripts/{install_script} > /dev/null 2>&1 && {check_cmd}"
+        check_cmd = f"{AGENT_INSTALL_SCRIPTS_ROOT}/{install_script} > /dev/null 2>&1 && {check_cmd}"
     try:
         result = container_runner.run_sync(ExecInput(command=check_cmd, label="preflight", timeout=180))
     except BaseException:

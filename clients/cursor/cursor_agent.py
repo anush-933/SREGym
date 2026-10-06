@@ -1,5 +1,5 @@
 """
-Cursor CLI agent implementation for SREGym.
+Cursor CLI agent implementation.
 
 Wraps Cursor's headless `agent` CLI (https://cursor.com/docs/cli), used as a
 low-usage fallback when the primary Z.ai-backed Codex path is out of quota.

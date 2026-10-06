@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 
 from mcp_server import prometheus_server
-from sregym.service.agent_visibility_policy import HIDDEN_NAMESPACES
+from sregym.service.agent_visibility_policy import HIDDEN_NAMESPACES, mentions_brand
 
 
 class FakeResponse:
@@ -56,6 +56,56 @@ def test_prometheus_tools_hide_chaos_metrics_and_alerts(monkeypatch):
     assert "khaos" not in metrics
     assert "CheckoutDown" in alerts
     assert "chaos-mesh" not in alerts
+
+
+def test_prometheus_tools_neutralize_harness_branding_without_dropping_series(monkeypatch):
+    class FakeClient:
+        def __init__(self, _url):
+            pass
+
+        def make_request(self, _method, url, **_kwargs):
+            if url.endswith("/query"):
+                return FakeResponse(
+                    {
+                        "data": {
+                            "resultType": "vector",
+                            "result": [
+                                {
+                                    "metric": {
+                                        "namespace": "evaluation",
+                                        "pod": "sregym-mcp-abc",
+                                        "image": "ghcr.io/sregym/sregym-mcp:latest",
+                                    },
+                                    "value": [1, "1"],
+                                }
+                            ],
+                        }
+                    }
+                )
+            return FakeResponse(
+                {
+                    "data": {
+                        "alerts": [
+                            {
+                                "state": "firing",
+                                "labels": {"namespace": "evaluation", "pod": "sregym-mcp-abc"},
+                                "annotations": {"summary": "BackOff on sregym-mcp-abc"},
+                            }
+                        ]
+                    }
+                }
+            )
+
+    monkeypatch.setattr(prometheus_server, "ObservabilityClient", FakeClient)
+
+    metrics = prometheus_server.get_metrics.fn("kube_pod_info")
+    alerts = prometheus_server.get_alerts.fn()
+
+    assert "BackOff" in alerts
+    assert "evaluation-mcp-abc" in alerts
+    assert "ghcr.io/evaluation/evaluation-mcp:latest" in metrics
+    assert not mentions_brand(metrics)
+    assert not mentions_brand(alerts)
 
 
 def test_observability_collectors_use_the_shared_hidden_namespaces():

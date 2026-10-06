@@ -1,6 +1,6 @@
 """
-OpenCode agent driver for SREGym.
-Entry point for running OpenCode agent on SREGym tasks.
+OpenCode agent driver.
+Entry point for running OpenCode agent.
 """
 
 import argparse
@@ -227,7 +227,7 @@ def save_results(
 
 def main():
     """Main entry point for OpenCode agent driver."""
-    parser = argparse.ArgumentParser(description="Run OpenCode agent on SREGym tasks")
+    parser = argparse.ArgumentParser(description="Run OpenCode agent on evaluation tasks")
     parser.add_argument(
         "--model",
         type=str,
@@ -244,7 +244,7 @@ def main():
         "--problem-id",
         type=str,
         default=None,
-        help="Problem ID for artifact naming (default: SREGYM_ARTIFACT_ID in benchmark runs)",
+        help="Problem ID for artifact naming (default: HARNESS_ARTIFACT_ID in benchmark runs)",
     )
     parser.add_argument(
         "--no-auto-install",
@@ -255,7 +255,7 @@ def main():
     args = parser.parse_args()
 
     logger.info("=" * 80)
-    logger.info("Starting OpenCode agent for SREGym")
+    logger.info("Starting OpenCode agent")
     logger.info(f"Model: {args.model}")
     logger.info(f"Logs directory: {args.logs_dir}")
     logger.info("=" * 80)

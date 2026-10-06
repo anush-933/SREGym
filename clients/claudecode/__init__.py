@@ -1,4 +1,4 @@
-"""Claude Code agent for SREGym."""
+"""Claude Code agent."""
 
 from clients.claudecode.claudecode_agent import ClaudeCodeAgent
 

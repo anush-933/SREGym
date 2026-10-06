@@ -51,7 +51,7 @@ greppable marker, and exit 2 so a chain script can exclude them.
 
 Through the harness, which launches the `cloudthinker` entry in `agents.yaml`
 and supplies the environment below. The driver has no standalone CLI flags: the
-problem identity comes from the harness (`SREGYM_ARTIFACT_ID`) and the conductor.
+problem identity comes from the harness (`HARNESS_ARTIFACT_ID`) and the conductor.
 
 ## Environment variables
 
@@ -59,7 +59,7 @@ problem identity comes from the harness (`SREGYM_ARTIFACT_ID`) and the conductor
 | --- | --- | --- |
 | `API_HOSTNAME` | `localhost` | SREGym conductor host (set by the harness). |
 | `API_PORT` | `8000` | SREGym conductor port (set by the harness). |
-| `SREGYM_ARTIFACT_ID` | — | Problem identity for artifact naming (set by the harness; `SREGYM_PROBLEM_ID` as legacy fallback). |
+| `HARNESS_ARTIFACT_ID` | — | Problem identity for artifact naming (set by the harness; `HARNESS_PROBLEM_ID` as legacy fallback). |
 | `AGENT_LOGS_DIR` | `./logs/cloudthinker` | Directory for `driver.log`, the per-stage artifacts, and the session file. The harness points this at the run directory. |
 | `CT_BIN` | `ct` | The CloudThinker dev CLI. |
 | `CT_REPO_DIR` | — | CloudThinker checkout to run `ct` from; `ct` resolves its compose slot from the working directory. |

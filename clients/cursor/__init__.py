@@ -1,4 +1,4 @@
-"""Cursor CLI agent for SREGym."""
+"""Cursor CLI agent."""
 
 from clients.cursor.cursor_agent import CursorAgent
 
